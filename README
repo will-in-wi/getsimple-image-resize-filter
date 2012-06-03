@@ -6,5 +6,5 @@ A plugin for GetSimple CMS to automatically resize images that have been inserte
 Check to see how big the images are. Depending on your webhost, you may be running out of memory while resizing the images.
 
 
-Written by William Johnston (http://www.manystrands.com/)
+Written by William Johnston (http://www.manystrands.com/). Inspired by the Drupal module of the same name (http://drupal.org/project/image_resize_filter).
 simple_html_dom.php is written by S.C. Chen (http://simplehtmldom.sourceforge.net/).
