@@ -19,8 +19,10 @@ register_plugin(
 	'http://www.manystrands.com/', //author website
 	'Resizes images in HTML', //Plugin description
 	'plugins', //page type - on which admin tab to display
-	'image_resize_filter_show'  //main function (administration)
+	'image_resize_filter_admin'  //main function (administration)
 );
+
+add_action('plugins-sidebar','createSideMenu',array($thisfile, 'Image Resize Filter'));
 
 add_filter('content', 'filter_image_resize');
 
@@ -134,7 +136,42 @@ function filter_image_resize($content) {
 	return($html->save());
 }
 
-function image_resize_filter_show() {
-	echo '<p>Resize images.</p>';
+function image_resize_filter_admin() {
+	echo '<h3>Image Resize Filter</h3>';
+	
+	// Check for a submitted form.
+	if(isset($_POST['resetCache'])) {
+		$dirIter = new RecursiveIteratorIterator(
+			new RecursiveDirectoryIterator('../' . RESIZE_CACHE_FOLDER),
+			RecursiveIteratorIterator::CHILD_FIRST
+		);
+		foreach($dirIter as $file) {
+			if (in_array($file->getBasename(), array('.', '..'))) {
+				continue;
+			} elseif ($file->isDir()) {
+				try {
+					rmdir($file->getPathname());
+				} catch (Exception $e) {
+					echo 'Problem with directory: ' . $file->getPathname();
+					echo 'Error message: ' . $e->getMessage();
+				}
+			} elseif ($file->isFile() || $file->isLink()) {
+				try {
+					unlink($file->getPathname());
+				} catch (Exception $e) {
+					echo 'Problem with file: ' . $file->getPathname();
+					echo 'Error message: ' . $e->getMessage();
+				}
+			}
+		}
+		
+		echo '<div class="updated"><p>Cache cleared</p></div>';
+	}
+	?>
+	<form method="post" id="resetImageResizeCache" action="<?php	echo $_SERVER ['REQUEST_URI']?>">
+		<input type="submit" class="submit" value="Reset Cache" name="resetCache" /><br /><br />
+		<p>This deletes all of the cached images, freeing space and eliminating unused images, but also slowing initial pageloads after completion.</p>
+	</form>
+	<?php
 }
 ?>
