@@ -24,11 +24,12 @@ register_plugin(
 
 add_filter('content', 'filter_image_resize');
 
+define('RESIZE_CACHE_FOLDER', 'data/uploads/resize_filter');
+
 # functions
 function filter_image_resize($content) {
-	define('RESIZE_CACHE_FOLDER', 'data/uploads/resize_filter');
 	
-	include('ImageResizeFilter/simple_html_dom.php');
+	include_once('ImageResizeFilter/simple_html_dom.php');
 	$html = new simple_html_dom();
 	$html->load($content);
 	
